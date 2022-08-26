@@ -1,3 +1,3 @@
 # quadtree-data-structure
 
-## https://en.wikipedia.org/wiki/Quadtree#Region_quadtree
+## [region quadtree](https://en.wikipedia.org/wiki/Quadtree#Region_quadtree)

@@ -23,11 +23,6 @@ public:
     Point top_left, bottom_right;
 };
 
-void print_box(Box region) {
-    printf("top-left: (%d, %d)     bottom-right:  (%d, %d) \n\n", region.top_left.x, region.top_left.y,
-                                                                  region.bottom_right.x, region.bottom_right.y);
-}
-
 class Quadtree {
 public:
     Quadtree(Box region) : region(region) {
@@ -36,40 +31,42 @@ public:
 
     #define MAX_POINTS 10
 
-
-    void insert(Point p) {
+    int insert(Point p) {
         if(is_leaf) {
-            if(region.colision(p)) {
-                data.push_back(p);
+            data.push_back(p);
 
-                // precisamos dividir o nó atual
-                if(data.size() == MAX_POINTS) {
-                    is_leaf = 0;
+            // precisamos dividir o nó atual
+            if(data.size() == MAX_POINTS) {
+                is_leaf = 0;
 
-                    for(int i = 0; i < 4; i++) {
-                        quadtree[i] = new Quadtree(get_region(region, i));
+                for(int i = 0; i < 4; i++) {
+                    quadtree[i] = new Quadtree(get_region(region, i));
 
-                        for(int j = 0; j < data.size();) {
-                            if(quadtree[i]->region.colision(data[j])) {
-                                quadtree[i]->data.push_back(data[j]);
-                                data.pop_front();
-                            } else {
-                                data.push_back(data.front());
-                                data.pop_front();
-                                j++;
-                            }
+                    for(int j = 0; j < data.size();) {
+                        if(quadtree[i]->region.colision(data[j])) {
+                            quadtree[i]->data.push_back(data[j]);
+                            data.pop_front();
+                        } else {
+                            data.push_back(data.front());
+                            data.pop_front();
+                            j++;
                         }
                     }
-
-                    data.clear();
                 }
+
+                data.clear();
             }
+
+            return 1;
         } else {
+            int ans = 0;
             for(int i = 0; i < 4; i++) {
                 if(quadtree[i]->region.colision(p)) {
-                    quadtree[i]->insert(p);
+                    ans = ans | quadtree[i]->insert(p);
                 }
             }
+
+            return ans;
         }
     }
 
@@ -100,9 +97,9 @@ public:
         }
     }   
 
+private:
     Quadtree*     quadtree[4];
     Box           region;
-private:
     deque<Point>  data;
     int           is_leaf;
 };
@@ -116,6 +113,5 @@ int main() {
         qt.insert(Point{rand() % 100, rand() % 100});
     }
 
-    print_box(qt.quadtree[0]->region);
     return 0;
 }

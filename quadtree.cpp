@@ -36,7 +36,7 @@ public:
     Box(sf::Vector2f ltop, int h, int w) : top_left(ltop), w(w), h(h) {
     }
 
-    // colision dot
+    // colision point
     bool colision(sf::Vector2f p) {
         return p.x >= top_left.x && p.x <= top_left.x + w &&
                p.y >= top_left.y && p.y <= top_left.y + h;
